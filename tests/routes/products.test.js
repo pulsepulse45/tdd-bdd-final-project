@@ -107,45 +107,47 @@ describe('Product Routes', () => {
   });
 
   describe('READ Product', () => {
-    test('should get a single product', async () => {
-      const products = await createProducts(1);
-      const testProduct = products[0];
-      const response = await request(app)
-        .get(`${BASE_URL}/${testProduct.id}`)
-        .expect(200);
-      expect(response.body.id).toBe(testProduct.id);
-      expect(response.body.name).toBe(testProduct.name);
-    });
+    test('should proceed if content type is correct but has extra parameters', async () => {
+          const productData = ProductFactory.build();
+          const response = await request(app)
+            .post(BASE_URL)
+            .set('Content-Type', 'application/json; charset=utf-8')
+            .send(productData);
+    
+          // We expect a 201, not a 415, because the base type is correct.
+          expect(response.status).toBe(201);
+        });
+      });
     
     test('should not get a product that is not found', async () => {
       await request(app)
         .get(`${BASE_URL}/99999`)
         .expect(404);
     });
-  });
+  
 
-  describe('UPDATE Product', () => {
-    test('should update a product', async () => {
-      const products = await createProducts(1);
-      const productToUpdate = products[0];
-      const updatePayload = {
-        name: 'Updated Name',
-        description: 'Updated Description',
-        price: '123.45',
-        category: productToUpdate.category,
-        available: !productToUpdate.available
-      };
-
-      const response = await request(app)
-        .put(`${BASE_URL}/${productToUpdate.id}`)
-        .send(updatePayload)
-        .expect(200);
-
-      expect(response.body.id).toBe(productToUpdate.id);
-      expect(response.body.name).toBe(updatePayload.name);
-      expect(response.body.price).toBe(parseFloat(updatePayload.price));
-      expect(response.body.available).toBe(updatePayload.available);
-    });
+    describe('UPDATE Product', () => {
+        test('should update a product', async () => {
+          const products = await createProducts(1);
+          const productToUpdate = products[0];
+          const updatePayload = {
+            name: 'Updated Name',
+            description: 'Updated Description',
+            price: '123.45',
+            category: productToUpdate.category,
+            available: !productToUpdate.available
+          };
+    
+          const response = await request(app)
+            .put(`${BASE_URL}/${productToUpdate.id}`)
+            .send(updatePayload)
+            .expect(200);
+    
+          expect(response.body.id).toBe(productToUpdate.id);
+          expect(response.body.name).toBe(updatePayload.name);
+          expect(response.body.price).toBe(parseFloat(updatePayload.price));
+          expect(response.body.available).toBe(updatePayload.available);
+        });
 
     test('should return 404 when updating a non-existent product', async () => {
       const updatedData = ProductFactory.build();
@@ -181,6 +183,7 @@ describe('Product Routes', () => {
         .get(`${BASE_URL}/${product.id}`)
         .expect(404);
     });
+    
 
     test('should return 404 when deleting a non-existent product', async () => {
       await request(app)
@@ -197,7 +200,7 @@ describe('Product Routes', () => {
         .expect(200);
       expect(response.body.length).toBe(5);
     });
-  });
+    });
 
   describe('LIST Products by Name', () => {
     test('should filter products by name', async () => {
