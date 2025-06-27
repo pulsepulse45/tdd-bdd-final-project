@@ -1,7 +1,7 @@
 const { Given } = require('@cucumber/cucumber');
 const axios = require('axios');
 
-const API_URL = 'http://localhost:8080/api/products';
+const API_URL = 'https://localhost:8080/api/products';
 
 Given('the following products', async function (dataTable) {
   // Clear existing products first to ensure a clean state
