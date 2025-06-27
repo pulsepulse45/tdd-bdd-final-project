@@ -3,7 +3,7 @@ const { Builder, By, Key, until, Select } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
 const assert = require('assert');
 
-const BASE_URL = 'https://localhost:8080';
+const BASE_URL = 'http://localhost:8080';
 
 let driver;
 
